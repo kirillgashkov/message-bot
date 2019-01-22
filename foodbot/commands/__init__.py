@@ -1,16 +1,17 @@
 """
-Runs a command by keyword passing kwargs.
+Provides API for running commands.
 """
+
 
 from typing import Optional
 import datetime
-import bot
-import base_command
-from commands import (
-    list_command,
+from foodbot import bot
+from foodbot.commands import (
+    base_command,
     tag_eating_command,
     tag_noteating_command,
     untag_command,
+    list_command,
     help_command,
 )
 
@@ -39,9 +40,9 @@ def command(keyword: str) -> Optional[base_command.BaseCommand]:
 
 
 _command_classes = {
-    list_command.KEYWORD: list_command.ListCommand,
     tag_eating_command.KEYWORD: tag_eating_command.TagEatingCommand,
     tag_noteating_command.KEYWORD: tag_noteating_command.TagNotEatingCommand,
     untag_command.KEYWORD: untag_command.UntagCommand,
+    list_command.KEYWORD: list_command.ListCommand,
     help_command.KEYWORD: help_command.HelpCommand,
 }

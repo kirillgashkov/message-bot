@@ -4,15 +4,15 @@ Outputs help message.
 
 from typing import List
 import datetime
-import base_command
-import bot
-from commands import (
+from foodbot import bot
+from foodbot.commands import (
+    base_command,
     list_command,
     tag_eating_command,
     tag_noteating_command,
     untag_command,
 )
-from constants import DOMAIN_NAME
+from foodbot.constants import DOMAIN_NAME
 
 
 KEYWORD = 'help'
@@ -22,12 +22,11 @@ class HelpCommand(base_command.BaseCommand):
 
     def run(self, date: datetime.date, student: int, args: List[str]):
         if args:
-            context = {'date': date, 'student': student, 'args': args}
             message = (
                 f'InputError: Команда "{KEYWORD}" не может принимать никакие '
                 f'аргументы.'
             )
-            bot.error(student, message, context)
+            bot.error(student, message)
             return
         message = (
             f'Введите\n'

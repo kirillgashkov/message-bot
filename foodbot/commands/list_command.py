@@ -2,12 +2,11 @@
 Add the student to the "eating" list.
 """
 
-from typing import List, Dict
+from typing import List
 import datetime
-import base_command
-import bot
-import database
-from constants import DATE_FORMAT
+from foodbot import bot, database
+from foodbot.commands import base_command
+from foodbot.constants import DATE_FORMAT
 
 
 KEYWORD = 'list'
@@ -17,27 +16,25 @@ class ListCommand(base_command.BaseCommand):
 
     def run(self, date: datetime.date, student: int, args: List[str]):
         if args:
-            context = {'date': date, 'student': student, 'args': args}
             message = (
                 f'InputError: Команда "{KEYWORD}" не может принимать никакие '
                 f'аргументы.'
             )
-            bot.error(student, message, context)
+            bot.error(student, message)
             return
 
         student_tags = database.student_tags(date)
-        student_names = database.student_names()
 
         eating_list = list()
         not_eating_list = list()
         undefined_list = list()
         for student, tag in student_tags.items():
             if tag == '+':
-                eating_list.append(_repr_student(student, student_names))
+                eating_list.append(_repr_student(student))
             elif tag == '-':
-                not_eating_list.append(_repr_student(student, student_names))
+                not_eating_list.append(_repr_student(student))
             else:
-                undefined_list.append(_repr_student(student, student_names))
+                undefined_list.append(_repr_student(student))
 
         message = (
             f'Дата: {_repr_date(date)}\n'
@@ -65,8 +62,8 @@ class ListCommand(base_command.BaseCommand):
 #
 
 
-def _repr_student(student: int, student_names: Dict[int, str]) -> str:
-    return f'- {student}: {student_names[student]}'
+def _repr_student(student: int) -> str:
+    return f'- {student}: {database.student_name(student)}'
 
 
 def _repr_date(date: datetime.date) -> str:
