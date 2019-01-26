@@ -26,4 +26,7 @@ HELP_OFFER_ON_ERROR = (
 
 
 DIR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FILE_CREDS = os.path.join(DIR_ROOT, 'credentials', 'gspread.json')
+GSPREAD_CREDS = os.path.join(DIR_ROOT, 'credentials', 'gspread.json')
+VK_API_CREDS = os.path.join(DIR_ROOT, 'credentials', 'vk_api.json')
+
+
