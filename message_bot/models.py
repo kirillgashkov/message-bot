@@ -2,42 +2,20 @@
 Contains models shared between other models.
 """
 
-from typing import Dict, List
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
 
 
+@dataclass
 class Person:
-
-    people = dict()
-
-    def __init__(self, ids: Dict[str, str]):
-        self.ids: Dict[str, str] = ids
-        self.tags: List[str] = list()
-        self.first_name: str = ''
-        self.last_name: str = ''
-
-    @classmethod
-    def for_id(cls, domain, id):
-        pair = (domain, id)
-        if pair in cls.people:
-            return cls.people[pair]
-        person = Person({domain: id})
-        cls.people[pair] = person
-        return person
+    ids: Dict[str, str]
+    tags: List[str] = field(default_factory=list)
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
 
 
+@dataclass
 class Student(Person):
-
-    def __init__(self, ids: Dict[str, str]):
-        super().__init__(ids)
-        self.list_number = None
-        self.should_order = None
-        self.should_order_default = None
-
-    @classmethod
-    def for_id(cls, domain, id):
-        pair = (domain, id)
-        if pair in cls.people:
-            return cls.people[pair]
-        person = Student({domain: id})
-        cls.people[pair] = person
-        return person
+    list_number: Optional[int] = None
+    is_eating: Optional[bool] = None
+    eating_default: Optional[bool] = None

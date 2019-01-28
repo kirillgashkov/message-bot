@@ -1,18 +1,23 @@
 """
-Bot's base engine that is indented to be inherited.
+Abstract bot engine.
 """
 
-from typing import Callable
+from abc import ABC, abstractmethod
+from typing import Callable, Optional
+
 from message_bot import models
 
 
-class BaseEngine:
+class BaseEngine(ABC):
 
+    @abstractmethod
     def message(self, person: models.Person, m: str):
-        raise NotImplementedError
+        pass
 
-    def error(self, person: models.Person, m: str, e: Exception):
-        raise NotImplementedError
+    @abstractmethod
+    def error(self, person: models.Person, m: str, e: Optional[Exception]):
+        pass
 
+    @abstractmethod
     def run(self, message_handler: Callable[[models.Person, str], None]):
-        raise NotImplementedError
+        pass

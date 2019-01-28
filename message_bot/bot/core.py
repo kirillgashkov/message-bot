@@ -1,16 +1,21 @@
 """
-'bot' module's core.
+Bot module's API.
 """
 
-from typing import Callable
-from message_bot import models
-from message_bot.bot.engines import BaseEngine
+from typing import Callable, Optional
+
+from message_bot import bot, models
 
 
-engine: BaseEngine = None
+#
+# Engine
+#
 
 
-def set_engine(new_engine: BaseEngine):
+engine: bot.engines.BaseEngine = None
+
+
+def set_engine(new_engine: bot.engines.BaseEngine):
     global engine
     engine = new_engine
 
@@ -20,11 +25,11 @@ def set_engine(new_engine: BaseEngine):
 #
 
 
-def message(person: models.Person , m: str):
+def message(person: models.Person, m: str):
     engine.message(person, m)
 
 
-def error(person: models.Person, m: str, e: Exception):
+def error(person: models.Person, m: str, e: Optional[Exception] = None):
     engine.error(person, m, e)
 
 

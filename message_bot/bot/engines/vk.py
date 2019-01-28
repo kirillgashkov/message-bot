@@ -1,55 +1,48 @@
 """
-Bot's engine that interacts with the user via social-networking site VK.
+Bot engine based on social-networking site VK.
 """
 
-from typing import Optional, Tuple, Callable
 import json
+from typing import Optional, Tuple, Callable
+
 from vk_api import vk_api, longpoll
-from message_bot import models
-from message_bot.bot.engines.base import BaseEngine
+
+from message_bot import bot, models, container
 from message_bot.constants import VK_API_CREDS, HELP_OFFER_ON_ERROR
 
 
-class VKEngine(BaseEngine):
+class VKEngine(bot.engines.BaseEngine):
 
     def __init__(self):
         username, password = credentials()
         self.vk_session = vk_session(username, password)
-        self.vk = self.vk_session.get_api()
+        self.vk_api = self.vk_session.get_api()
 
     def message(self, person: models.Person, m: str):
-        id_ = person.ids.get('vk')
-        if not id_:
-            print(
-                'MessageBotError: person targeted to receive message does '
-                'not have VK id.'
-            )
+        identifier = person.ids.get('vk')
+        if not identifier:
+            print("MessageBotError: targeted person doesn't have vk id.")
             return
-        self.vk.messages.send(user_ids=id_, message=m)
+        self.vk_api.messages.send(user_ids=identifier, message=m)
 
-    def error(self, person: models.Person, m: str, e: Exception):
-        formatted_m = m + ' ' + HELP_OFFER_ON_ERROR
-        id_ = person.ids.get('vk')
-        if not id_:
-            print(
-                'MessageBotError: person targeted to receive message does '
-                'not have VK id.'
-            )
+    def error(self, person: models.Person, m: str, e: Optional[Exception]):
+        identifier = person.ids.get('vk')
+        if not identifier:
+            print("MessageBotError: targeted person doesn't have vk id.")
             return
-        print('[!]', m, repr(e))
-        self.vk.messages.send(user_ids=id_, message=formatted_m)
+        s = f'{m} {HELP_OFFER_ON_ERROR}'
+        self.vk_api.messages.send(user_ids=identifier, message=s)
 
     def run(self, message_handler: Callable[[models.Person, str], None]):
         vk_longpoll = longpoll.VkLongPoll(self.vk_session)
         for event in vk_longpoll.listen():
             is_new_message = event.type != longpoll.VkEventType.MESSAGE_NEW
             is_from_user = event.from_user
-            if not (is_new_message and is_from_user):
+            if not is_new_message or not is_from_user:
                 continue
-            sender_id = event.user_id
-            sender = models.Person.for_id('vk', sender_id)
+            person = container.person_for_id('vk', event.user_id)
             message = event.text
-            message_handler(sender, message)
+            message_handler(person, message)
 
 
 #

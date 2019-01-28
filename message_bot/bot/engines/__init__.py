@@ -1,6 +1,3 @@
-"""
-Bot engines.
-"""
 
 from .base import BaseEngine
 from .cli import CLIEngine
