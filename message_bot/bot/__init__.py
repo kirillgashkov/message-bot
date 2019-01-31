@@ -1,5 +1,5 @@
 """
-Provides API for interacting with students.
+Provides API for interacting with users.
 """
 
 from . import engines
