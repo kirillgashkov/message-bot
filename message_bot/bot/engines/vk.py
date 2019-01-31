@@ -2,19 +2,17 @@
 Bot engine based on social-networking site VK.
 """
 
-import json
-from typing import Optional, Tuple, Callable
+from typing import Optional, Callable
 
 from vk_api import vk_api, longpoll
 
 from message_bot import bot, models, container
-from message_bot.constants import VK_API_CREDS, HELP_OFFER_ON_ERROR
+from message_bot.constants import HELP_OFFER_ON_ERROR
 
 
 class VKEngine(bot.engines.BaseEngine):
 
-    def __init__(self):
-        username, password = credentials()
+    def __init__(self, username: str, password: str):
         self.vk_session = vk_session(username, password)
         self.vk_api = self.vk_session.get_api()
 
@@ -58,8 +56,3 @@ def vk_session(username: str, password: str) -> Optional[vk_api.VkApi]:
         print(e)
         return None
     return session
-
-
-def credentials() -> Tuple[str, str]:
-    creds = json.load(VK_API_CREDS)
-    return creds['username'], creds['password']
