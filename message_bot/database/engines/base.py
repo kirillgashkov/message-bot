@@ -23,10 +23,13 @@ class BaseEngine(ABC):
         self.table[key] = fields
 
     def read(self, key: str) -> Optional[Dict[str, str]]:
-        return self.table.get(key)
+        fields = self.table.get(key)
+        if not fields:
+            return None
+        return fields.copy()
 
     def read_all(self) -> Dict[str, Dict[str, str]]:
-        return self.table
+        return self.table.copy()
 
     def update(self, key: str, fields: Dict[str, str]):
         if key not in self.table:
