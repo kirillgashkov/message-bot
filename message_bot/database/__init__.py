@@ -2,4 +2,4 @@
 Provides API for interacting with database.
 """
 
-from . import engines
+from . import engines, foodbot
