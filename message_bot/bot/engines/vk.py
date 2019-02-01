@@ -17,19 +17,11 @@ class VKEngine(bot.engines.BaseEngine):
         self.vk_api = self.vk_session.get_api()
 
     def message(self, person: models.Person, m: str):
-        identifier = person.ids.get('vk')
-        if not identifier:
-            print("MessageBotError: targeted person doesn't have vk id.")
-            return
-        self.vk_api.messages.send(user_ids=identifier, message=m)
+        self.vk_api.messages.send(user_ids=person.id, message=m)
 
     def error(self, person: models.Person, m: str, e: Optional[Exception]):
-        identifier = person.ids.get('vk')
-        if not identifier:
-            print("MessageBotError: targeted person doesn't have vk id.")
-            return
         s = f'{m} {HELP_OFFER_ON_ERROR}'
-        self.vk_api.messages.send(user_ids=identifier, message=s)
+        self.vk_api.messages.send(user_ids=person.id, message=s)
 
     def run(self, message_handler: Callable[[models.Person, str], None]):
         vk_longpoll = longpoll.VkLongPoll(self.vk_session)
@@ -38,7 +30,7 @@ class VKEngine(bot.engines.BaseEngine):
             is_from_user = event.from_user
             if not is_new_message or not is_from_user:
                 continue
-            person = container.person_for_id('vk', event.user_id)
+            person = container.person_for_id(event.user_id)
             message = event.text
             message_handler(person, message)
 

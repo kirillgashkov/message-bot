@@ -11,19 +11,11 @@ from message_bot.constants import HELP_OFFER_ON_ERROR
 class CLIEngine(bot.engines.BaseEngine):
 
     def message(self, person: models.Person, m: str):
-        identifier = person.ids.get('cli')
-        if not identifier:
-            print("MessageBotError: targeted person doesn't have cli id.")
-            return
-        s = f'[MSG] [{identifier}] {m}'
+        s = f'[MSG] [{person.id}] {m}'
         print(s)
 
     def error(self, person: models.Person, m: str, e: Optional[Exception]):
-        identifier = person.ids.get('cli')
-        if not identifier:
-            print("MessageBotError: targeted person doesn't have cli id.")
-            return
-        s = f'[ERR]-[{e!r}] [{identifier}] {m} {HELP_OFFER_ON_ERROR}'
+        s = f'[ERR]-[{e!r}] [{person.id}] {m} {HELP_OFFER_ON_ERROR}'
         print(s)
 
     def run(self, message_handler: Callable[[models.Person, str], None]):
@@ -53,5 +45,5 @@ def split_cli_input(s: str) -> Optional[Tuple[models.Person, str]]:
     identifier = parts[0]
     if identifier[0:2] != 'id':
         return None
-    person = container.person_for_id('cli', parts[0])
+    person = container.person_for_id(parts[0])
     return (person, '') if len(parts) == 1 else (person, parts[1])

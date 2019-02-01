@@ -12,7 +12,7 @@ from message_bot import bot, models
 #
 
 
-engine: bot.engines.BaseEngine = None
+engine: bot.engines.BaseEngine
 
 
 def set_engine(new_engine: bot.engines.BaseEngine):
