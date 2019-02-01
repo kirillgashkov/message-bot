@@ -6,7 +6,7 @@ from typing import Optional, Callable
 
 from vk_api import vk_api, longpoll
 
-from message_bot import bot, models, container
+from message_bot import bot, models, database
 from message_bot.constants import HELP_OFFER_ON_ERROR
 
 
@@ -30,7 +30,7 @@ class VKEngine(bot.engines.BaseEngine):
             is_from_user = event.from_user
             if not is_new_message or not is_from_user:
                 continue
-            person = container.person_for_id(event.user_id)
+            person = database.people.person(event.user_id)
             message = event.text
             message_handler(person, message)
 

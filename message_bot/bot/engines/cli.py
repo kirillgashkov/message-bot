@@ -4,7 +4,7 @@ CLI-based bot engine.
 
 from typing import Tuple, Optional, Callable
 
-from message_bot import bot, models, container
+from message_bot import bot, models, database
 from message_bot.constants import HELP_OFFER_ON_ERROR
 
 
@@ -45,5 +45,5 @@ def split_cli_input(s: str) -> Optional[Tuple[models.Person, str]]:
     identifier = parts[0]
     if identifier[0:2] != 'id':
         return None
-    person = container.person_for_id(parts[0])
+    person = database.people.person(identifier)
     return (person, '') if len(parts) == 1 else (person, parts[1])

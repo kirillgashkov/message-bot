@@ -30,3 +30,9 @@ GSPREAD_CREDS = os.path.join(DIR_ROOT, 'credentials', 'gspread.json')
 VK_API_CREDS = os.path.join(DIR_ROOT, 'credentials', 'vk_api.json')
 
 
+#
+# Tags
+#
+
+
+TAG_STRANGER = 'STRANGER'
