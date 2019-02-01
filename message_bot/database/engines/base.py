@@ -3,7 +3,7 @@ Abstract database engine.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional
+from typing import Dict, Optional, Callable
 
 
 class BaseEngine(ABC):
@@ -12,11 +12,11 @@ class BaseEngine(ABC):
         self.table = dict()
 
     @abstractmethod
-    def push(self):
+    def push(self, callback: Callable[[], None] = lambda: ...):
         pass
 
     @abstractmethod
-    def pull(self):
+    def pull(self, callback: Callable[[], None] = lambda: ...):
         pass
 
     def write(self, key: str, fields: Dict[str, str]):

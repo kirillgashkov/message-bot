@@ -2,7 +2,7 @@
 Database engine will use Google Sheets via gspread.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Callable
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -20,7 +20,7 @@ class GspreadEngine(database.engines.BaseEngine):
         gclient = gspread.authorize(creds)
         self.worksheet = gclient.open(sds_name).worksheet(wks_name)
 
-    def push(self):
+    def push(self, callback: Callable[[], None] = lambda: ...):
         rows = get_all_values(self.table)
         row_count = len(rows)
         col_count = len(rows[0])
@@ -31,8 +31,9 @@ class GspreadEngine(database.engines.BaseEngine):
             cell.value = rows[cell.row][cell.col]
 
         self.worksheet.update_cells(cells)
+        callback()
 
-    def pull(self):
+    def pull(self, callback: Callable[[], None] = lambda: ...):
         records = self.worksheet.get_all_records()
 
         new_table = dict()
@@ -43,6 +44,7 @@ class GspreadEngine(database.engines.BaseEngine):
             new_table[key] = filtered
 
         self.table = new_table
+        callback()
 
 
 #
