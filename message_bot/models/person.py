@@ -1,12 +1,12 @@
 """
-Contains models shared between other models.
+An object that holds person's ID, tags and optionally fields.
 """
 
-from dataclasses import dataclass
+import dataclasses
 from typing import List, Dict
 
 
-@dataclass
+@dataclasses.dataclass
 class Person:
     id: str
     tags: List[str]
