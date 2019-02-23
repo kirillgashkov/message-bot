@@ -1,5 +1,5 @@
 """
-Contains constants shared between other models.
+Contains constants shared between other modules.
 """
 
 import os
