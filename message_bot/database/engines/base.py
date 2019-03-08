@@ -2,39 +2,41 @@
 Abstract database engine.
 """
 
-from abc import ABC, abstractmethod
-from typing import Dict, Optional, Callable
+import abc
+from typing import Dict, Optional, Callable, Mapping
+
+from message_bot.database import _utils
 
 
-class BaseEngine(ABC):
+class BaseEngine(abc.ABC):
 
     def __init__(self):
-        self.table = dict()
+        self._table = dict()
 
-    @abstractmethod
+    @abc.abstractmethod
     def push(self, callback: Callable[[], None] = lambda: ...):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def pull(self, callback: Callable[[], None] = lambda: ...):
         pass
 
     def write(self, key: str, fields: Dict[str, str]):
-        self.table[key] = fields
+        self._table[key] = fields
 
-    def read(self, key: str) -> Optional[Dict[str, str]]:
-        fields = self.table.get(key)
-        if not fields:
+    def read(self, key: str) -> Optional[Mapping[str, str]]:
+        if key not in self._table:
             return None
-        return fields.copy()
+        return _utils.DatabaseView(self._table[key])
 
-    def read_all(self) -> Dict[str, Dict[str, str]]:
-        return self.table.copy()
+    def read_all(self) -> Mapping[str, Mapping[str, str]]:
+        return _utils.DatabaseView(self._table)
 
-    def update(self, key: str, fields: Dict[str, str]):
-        if key not in self.table:
-            self.table = dict()
-        self.table[key].update(fields)
+    def update(self, key: str, fields: Dict[str, str]) -> bool:
+        if key not in self._table:
+            return False
+        self._table[key].update(fields)
+        return True
 
     def delete(self, key: str):
-        del self.table[key]
+        del self._table[key]
