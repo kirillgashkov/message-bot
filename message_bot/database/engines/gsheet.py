@@ -7,10 +7,10 @@ from typing import Dict, List, Callable
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-from message_bot import database
+from message_bot.database.engines import BaseEngine
 
 
-class GspreadEngine(database.engines.BaseEngine):
+class GsheetEngine(BaseEngine):
 
     KEY_FIELD = '__key__'
 
@@ -21,7 +21,7 @@ class GspreadEngine(database.engines.BaseEngine):
         self.worksheet = gclient.open(sds_name).worksheet(wks_name)
 
     def push(self, callback: Callable[[], None] = lambda: ...):
-        rows = get_all_values(self.table)
+        rows = get_all_values(self._table)
         row_count = len(rows)
         col_count = len(rows[0])
 
@@ -43,7 +43,7 @@ class GspreadEngine(database.engines.BaseEngine):
             filtered = {k: v for k, v in record.items() if v != ''}
             new_table[key] = filtered
 
-        self.table = new_table
+        self._table = new_table
         callback()
 
 
@@ -62,7 +62,7 @@ def get_all_fields(records: Dict[str, Dict[str, str]]) -> List[str]:
     fields = set()
     for values in records.values():
         fields = fields.union(values.keys())
-    return [GspreadEngine.KEY_FIELD] + sorted(fields)
+    return [GsheetEngine.KEY_FIELD] + sorted(fields)
 
 
 def get_all_values(records: Dict[str, Dict[str, str]]) -> List[List[str]]:
@@ -73,7 +73,7 @@ def get_all_values(records: Dict[str, Dict[str, str]]) -> List[List[str]]:
     indices = {f: i for i, f in enumerate(fields)}
     for key, record in records.items():
         row = empty_row.copy()
-        row[indices[GspreadEngine.KEY_FIELD]] = key
+        row[indices[GsheetEngine.KEY_FIELD]] = key
         for f, v in record.items():
             row[indices[f]] = v
         rows.append(row)
