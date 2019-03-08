@@ -6,10 +6,10 @@ import os.path
 import json
 from typing import Callable
 
-from message_bot import database
+from message_bot.database.engines import BaseEngine
 
 
-class JSONEngine(database.engines.BaseEngine):
+class JSONEngine(BaseEngine):
 
     def __init__(self, fp: str):
         super().__init__()
@@ -18,7 +18,7 @@ class JSONEngine(database.engines.BaseEngine):
 
     def push(self, callback: Callable[[], None] = lambda: ...):
         with open(self.filepath, 'w') as f:
-            json.dump(self.table, f)
+            json.dump(self._table, f)
         callback()
 
     def pull(self, callback: Callable[[], None] = lambda: ...):
@@ -27,5 +27,5 @@ class JSONEngine(database.engines.BaseEngine):
                 new_table = json.load(f)
         else:
             new_table = dict()
-        self.table = new_table
+        self._table = new_table
         callback()
