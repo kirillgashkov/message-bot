@@ -45,5 +45,5 @@ def split_cli_input(s: str) -> Optional[Tuple[models.Person, str]]:
     identifier = parts[0]
     if identifier[0:2] != 'id':
         return None
-    person = database.people.person(identifier)
+    person = database.people.get_person_by_id(identifier)
     return (person, '') if len(parts) == 1 else (person, parts[1])

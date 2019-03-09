@@ -30,7 +30,7 @@ class VKEngine(bot.engines.BaseEngine):
             is_from_user = event.from_user
             if not is_new_message or not is_from_user:
                 continue
-            person = database.people.person(event.user_id)
+            person = database.people.get_person_by_id(event.user_id)
             message = event.text
             message_handler(person, message)
 
