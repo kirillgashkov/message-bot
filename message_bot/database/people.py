@@ -2,6 +2,8 @@
 Provides API for accessing database with people.
 """
 
+from typing import Optional
+
 from message_bot import models, database
 from message_bot.models.person import TAG_STRANGER
 
@@ -27,7 +29,7 @@ def set_engine(new_engine: database.engines.BaseEngine):
 _people = dict()
 
 
-def get_person(identifier: str) -> models.Person:
+def get_person_by_id(identifier: str) -> models.Person:
     if identifier in _people:
         return _people[identifier]
 
@@ -41,3 +43,31 @@ def get_person(identifier: str) -> models.Person:
 
     _people[identifier] = new_person
     return new_person
+
+
+_student_identifiers = dict()
+
+
+def _initialize_student_identifiers():
+    table = engine.read_all()
+
+    student_identifiers = dict()
+    for identifier, fields in table:
+        list_number = fields['list_number']
+        if list_number is None:
+            continue
+        student_identifiers[list_number] = identifier
+
+    global _student_identifiers
+    _student_identifiers = student_identifiers
+
+
+def get_student_by_listnum(listnum: int) -> Optional[models.Person]:
+    if not _student_identifiers:
+        _initialize_student_identifiers()
+    identifier = _student_identifiers.get(listnum)
+
+    if identifier is None:
+        return None
+
+    return get_person_by_id(identifier)
