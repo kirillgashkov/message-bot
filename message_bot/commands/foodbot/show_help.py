@@ -10,14 +10,8 @@ from message_bot.commands import foodbot
 
 
 class ShowHelpCommand(commands.BaseCommand):
-
-    @property
-    def keyword(self) -> str:
-        return 'help'
-
-    @property
-    def required_tags(self) -> Set[str]:
-        return set()
+    keyword = 'help'
+    required_tags = set()
 
     def run(self, date: datetime.date, person: models.Person, args: List[str]):
         if args:
@@ -25,7 +19,7 @@ class ShowHelpCommand(commands.BaseCommand):
                 f'InputError: Команда "{self.keyword}" не может принимать '
                 f'никакие аргументы.'
             )
-            bot.error(person, message)
+            bot.error(person.id, message)
             return
 
         message = (
@@ -37,11 +31,11 @@ class ShowHelpCommand(commands.BaseCommand):
             f'- "{foodbot.SUPER_COMMAND} {foodbot.UnsetCommand.keyword}", '
             f'чтобы удалить себя из обоих списков;\n'
             f'- "{foodbot.SUPER_COMMAND} {foodbot.ShowListCommand.keyword}", '
-            f'чтобы получить списки "Едят" и "Не едят".'
+            f'чтобы получить списки "Едят" и "Не едят".\n'
             f'- "{foodbot.SUPER_COMMAND} {foodbot.ShowHelpCommand.keyword}", '
             f'чтобы вывести это сообщение."\n'
             f'\n'
             f'Добавьте "as STUDENT" к концу команды, чтобы выполнить ее от лица '
-            f'другого ученика. STUDENT - это число в диапазоне [1, 25].'
+            f'другого ученика. STUDENT - это целое число в диапазоне [1, 25].'
         )
-        bot.message(person, message)
+        bot.message(person.id, message)

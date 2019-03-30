@@ -3,20 +3,15 @@ Show "eating" and "not eating" lists.
 """
 
 import datetime
-from typing import Set, List
+from typing import List
 
 from message_bot import commands, models, bot, database
 from message_bot.constants import DATE_FORMAT
 
+
 class ShowListCommand(commands.BaseCommand):
-
-    @property
-    def keyword(self) -> str:
-        return 'list'
-
-    @property
-    def required_tags(self) -> Set[str]:
-        return set()
+    keyword = 'list'
+    required_tags = set()
 
     def run(self, date: datetime.date, person: models.Person, args: List[str]):
         if args:
@@ -24,7 +19,7 @@ class ShowListCommand(commands.BaseCommand):
                 f'InputError: Команда "{self.keyword}" не может принимать '
                 f'никакие аргументы.'
             )
-            bot.error(person, message)
+            bot.error(person.id, message)
             return
 
         eatings = database.foodbot.get_eatings(date)
@@ -59,7 +54,7 @@ class ShowListCommand(commands.BaseCommand):
             f'# Не едят: {len(not_eating_list)}\n'
             f'# Не отметились: {len(unset_list)}\n'
         )
-        bot.message(person, message)
+        bot.message(person.id, message)
 
 
 #
