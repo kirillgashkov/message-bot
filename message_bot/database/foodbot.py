@@ -37,7 +37,7 @@ def set_eating(
         new_value: Optional[bool]
         ):
     date_as_str = date.strftime(DATE_FORMAT)
-    value_as_str = str(new_value) if new_value is not None else ''
+    value_as_str = str(new_value).upper() if new_value is not None else ''
     engine.update(person.id, {date_as_str: value_as_str})
 
 
@@ -50,13 +50,13 @@ def get_eatings(
     eatings = dict()
     for student_id, fields in table.items():
         value = fields.get(date_as_str)
-        if value == 'True':
+        if value == 'TRUE':
             eating = True
-        elif value == 'False':
+        elif value == 'FALSE':
             eating = False
         else:
             eating = None
-        student = database.people.get_person(student_id)
+        student = database.people.get_person_by_id(student_id)
         eatings[student] = eating
 
     return eatings

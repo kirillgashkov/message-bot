@@ -28,7 +28,7 @@ class GsheetEngine(BaseEngine):
         self.worksheet.resize(row_count, col_count)
         cells = self.worksheet.range(1, 1, row_count, col_count)
         for cell in cells:
-            cell.value = rows[cell.row][cell.col]
+            cell.value = rows[cell.row-1][cell.col-1]
 
         self.worksheet.update_cells(cells)
         callback()

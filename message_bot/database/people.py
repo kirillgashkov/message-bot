@@ -52,7 +52,7 @@ def _initialize_student_identifiers():
     table = engine.read_all()
 
     student_identifiers = dict()
-    for identifier, fields in table:
+    for identifier, fields in table.items():
         list_number = fields['list_number']
         if list_number is None:
             continue
