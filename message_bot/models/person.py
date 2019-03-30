@@ -12,6 +12,12 @@ class Person:
     tags: Set[str]
     fields: Dict[str, Any]
 
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        return self.id == other.id
+
 
 #
 # Tags
