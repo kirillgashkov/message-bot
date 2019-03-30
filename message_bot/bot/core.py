@@ -4,7 +4,7 @@ Bot module's API.
 
 from typing import Callable, Optional
 
-from message_bot import bot, models
+from message_bot.bot.engines import BaseEngine
 
 
 #
@@ -12,10 +12,10 @@ from message_bot import bot, models
 #
 
 
-engine: bot.engines.BaseEngine
+engine: BaseEngine
 
 
-def set_engine(new_engine: bot.engines.BaseEngine):
+def set_engine(new_engine: BaseEngine):
     global engine
     engine = new_engine
 
@@ -25,13 +25,13 @@ def set_engine(new_engine: bot.engines.BaseEngine):
 #
 
 
-def message(person: models.Person, m: str):
-    engine.message(person, m)
+def message(recipient_id: str, m: str):
+    engine.message(recipient_id, m)
 
 
-def error(person: models.Person, m: str, e: Optional[Exception] = None):
-    engine.error(person, m, e)
+def error(recipient_id: str, m: str, e: Optional[Exception] = None):
+    engine.error(recipient_id, m, e)
 
 
-def run(message_handler: Callable[[models.Person, str], None]):
+def run(message_handler: Callable[[str, str], None]):
     engine.run(message_handler)

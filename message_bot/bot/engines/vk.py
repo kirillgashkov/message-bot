@@ -6,33 +6,30 @@ from typing import Optional, Callable
 
 from vk_api import vk_api, longpoll
 
-from message_bot import bot, models, database
-from message_bot.constants import HELP_OFFER_ON_ERROR
+from message_bot.bot.engines import BaseEngine
 
 
-class VKEngine(bot.engines.BaseEngine):
+class VKEngine(BaseEngine):
 
     def __init__(self, username: str, password: str):
         self.vk_session = vk_session(username, password)
         self.vk_api = self.vk_session.get_api()
 
-    def message(self, person: models.Person, m: str):
-        self.vk_api.messages.send(user_ids=person.id, message=m)
+    def message(self, recipient_id: str, m: str):
+        self.vk_api.messages.send(user_ids=recipient_id, message=m)
 
-    def error(self, person: models.Person, m: str, e: Optional[Exception]):
-        s = f'{m} {HELP_OFFER_ON_ERROR}'
-        self.vk_api.messages.send(user_ids=person.id, message=s)
+    def error(self, recipient_id: str, m: str, e: Optional[Exception]):
+        s = f'{m}'
+        self.vk_api.messages.send(user_ids=recipient_id, message=s)
 
-    def run(self, message_handler: Callable[[models.Person, str], None]):
+    def run(self, message_handler: Callable[[str, str], None]):
         vk_longpoll = longpoll.VkLongPoll(self.vk_session)
         for event in vk_longpoll.listen():
             is_new_message = event.type != longpoll.VkEventType.MESSAGE_NEW
             is_from_user = event.from_user
             if not is_new_message or not is_from_user:
                 continue
-            person = database.people.get_person_by_id(event.user_id)
-            message = event.text
-            message_handler(person, message)
+            message_handler(event.user_id, event.text)
 
 
 #

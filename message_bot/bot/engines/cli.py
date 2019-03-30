@@ -4,21 +4,20 @@ CLI-based bot engine.
 
 from typing import Tuple, Optional, Callable
 
-from message_bot import bot, models, database
-from message_bot.constants import HELP_OFFER_ON_ERROR
+from message_bot.bot.engines import BaseEngine
 
 
-class CLIEngine(bot.engines.BaseEngine):
+class CLIEngine(BaseEngine):
 
-    def message(self, person: models.Person, m: str):
-        s = f'[MSG] [{person.id}] {m}'
+    def message(self, recipient_id: str, m: str):
+        s = f'[MSG] [{recipient_id}] {m}'
         print(s)
 
-    def error(self, person: models.Person, m: str, e: Optional[Exception]):
-        s = f'[ERR]-[{e!r}] [{person.id}] {m} {HELP_OFFER_ON_ERROR}'
+    def error(self, recipient_id: str, m: str, e: Optional[Exception]):
+        s = f'[ERR]-[{e!r}] [{recipient_id}] {m}'
         print(s)
 
-    def run(self, message_handler: Callable[[models.Person, str], None]):
+    def run(self, message_handler: Callable[[str, str], None]):
         while True:
             s = input('> ')
             split_input = split_cli_input(s)
@@ -29,8 +28,8 @@ class CLIEngine(bot.engines.BaseEngine):
                     'with `id` and any sequence of characters as one word).'
                 )
                 continue
-            person, message = split_input
-            message_handler(person, message)
+            identifier, message = split_input
+            message_handler(identifier, message)
 
 
 #
@@ -38,12 +37,11 @@ class CLIEngine(bot.engines.BaseEngine):
 #
 
 
-def split_cli_input(s: str) -> Optional[Tuple[models.Person, str]]:
+def split_cli_input(s: str) -> Optional[Tuple[str, str]]:
     parts = s.split(maxsplit=1)
     if not parts:
         return None
     identifier = parts[0]
     if identifier[0:2] != 'id':
         return None
-    person = database.people.get_person_by_id(identifier)
-    return (person, '') if len(parts) == 1 else (person, parts[1])
+    return (identifier, '') if len(parts) == 1 else (identifier, parts[1])
