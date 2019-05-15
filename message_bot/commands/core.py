@@ -34,6 +34,8 @@ def get_command(
         super_command: str,
         command: str
         ) -> Optional[commands.BaseCommand]:
-    command_classes = _all_command_classes.get(super_command)
-    command_class = command_classes.get(command) if command_classes else None
+    command_classes = _all_command_classes.get(super_command.lower())
+    if not command_classes:
+        return None
+    command_class = command_classes.get(command.lower())
     return command_class() if command_class else None

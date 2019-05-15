@@ -15,7 +15,7 @@ class SetNotEatingCommand(commands.BaseCommand):
     def run(self, date: datetime.date, person: models.Person, args: List[str]):
         if not args:
             self._set_not_eating_direct(date, person)
-        elif 'as' == args[0] and len(args) == 2:
+        elif 'as' == args[0].lower() and len(args) == 2:
             recipient_listnum = int(args[1])
             if recipient_listnum is None:
                 message = (
