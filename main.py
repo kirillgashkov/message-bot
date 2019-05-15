@@ -10,8 +10,13 @@ from message_bot.constants import GSPREAD_CREDS, VK_API_CREDS
 
 
 def main():
+    print('setting the engines... ', end='')
     _set_engines()
+    print('done')
+    print('initializing the databases... ', end='')
     _init_databases()
+    print('done')
+    print('ready.')
     try:
         bot.run(_message_handler)
     except KeyboardInterrupt:
@@ -24,10 +29,13 @@ def _set_engines():
     foodbot_database_engine = database.engines.GsheetEngine(
         GSPREAD_CREDS, 'message-bot', 'foodbot')
 
-    # with open(VK_API_CREDS) as f:
-    #     login = json.load(f)
-    #     bot_engine = bot.engines.VKEngine(login['username'], login['password'])
-    bot_engine = bot.engines.CLIEngine()
+    with open(VK_API_CREDS) as f:
+        creds = json.load(f)
+    bot_engine = bot.engines.VKEngine(
+        creds['access_token'],
+        creds['group_id'],
+        'Если вам нужна помощь, отправьте "food help".'
+    )
 
     database.people.set_engine(people_database_engine)
     database.foodbot.set_engine(foodbot_database_engine)
