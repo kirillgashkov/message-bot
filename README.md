@@ -13,7 +13,7 @@ Highly customizable bot capable of accepting and answering messages.
 - Install `pip` packages from [requirements.txt](requirements.txt).
 - Get credentials for engines you use:
 	- If your database is powered by `GspreadEngine`, [get OAuth Credentials](https://gspread.readthedocs.io/en/latest/oauth2.html) and save them as `credentials/gspread.json`;
-	- If your bot's running `VKEngine`, create a JSON file with the scheme of `{"username": "YOUR_USERNAME", "password": "YOUR_PASSWORD"}` which contains the username and the password from your VK account and save it as `credentials/vk_api.json`.
+	- If your bot's running `VKEngine`, create a JSON file which contains the access token and the group ID to your VK community with the scheme of `{"access_token": "COMMUNITY_TOKEN", "group_id": "COMMUNITY_ID"}` and save it as `credentials/vk_api.json`.
 - *Done.*
 
 ## Usage
