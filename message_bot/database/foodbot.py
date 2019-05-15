@@ -49,14 +49,27 @@ def get_eatings(
 
     eatings = dict()
     for student_id, fields in table.items():
-        value = fields.get(date_as_str)
-        if value == 'TRUE':
-            eating = True
-        elif value == 'FALSE':
-            eating = False
+        value = string_to_bool(fields.get(date_as_str))
+        if value is not None:
+            eating = value
         else:
-            eating = None
+            default = fields.get('eating_default')
+            eating = string_to_bool(default)
         student = database.people.get_person_by_id(student_id)
         eatings[student] = eating
 
     return eatings
+
+
+#
+# Utilities
+#
+
+
+def string_to_bool(s) -> Optional[bool]:
+    if s == 'TRUE':
+        return True
+    elif s == 'FALSE':
+        return False
+    else:
+        return None
